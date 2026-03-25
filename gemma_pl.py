@@ -10,6 +10,7 @@ from openpyxl.utils import get_column_letter
 MODEL_NAME = "google/gemma-3-12b-it"
 # MODEL_NAME = "Qwen/Qwen2.5-7B-Instruct"
 
+local_model_path = "/data2/cmdir/home/ioit107/.cache/huggingface/hub/models--google--gemma-3-12b-it/snapshots/96b6f1eccf38110c56df3a15bffe176da04bfd80"
 
 hf_token = 'token'
 
@@ -28,20 +29,21 @@ COL_TAI_LIEU = "Tài liệu"
 def load_model(model_name: str = MODEL_NAME):
     print(f"[INFO] Đang tải model: {model_name} ...")
     tokenizer = AutoTokenizer.from_pretrained(
-        MODEL_NAME,
+        local_model_path,
         trust_remote_code=True,
-        token=hf_token
-        # local_files_only=True
+        # token=hf_token
+        local_files_only=True
     )
 
     model = AutoModelForCausalLM.from_pretrained(
-        MODEL_NAME,
+        local_model_path,
         torch_dtype=torch.bfloat16,
         device_map="auto",
         trust_remote_code=True,
-        token=hf_token
-        # local_files_only=True
+        # token=hf_token
+        local_files_only=True
     )
+    
     generator = pipeline(
         "text-generation",
         model=model,
